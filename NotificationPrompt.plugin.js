@@ -1,8 +1,12 @@
 /**
  * @name NotificationPrompter
- * @version 0.1.0
  * @description This is a plugin intended to prompt the user when joining a server with chat notifications default. 
+ * @version 0.1.2
  * @author OneSketchyGuy
+ * @authorLink https://github.com/onesketchyguy
+ * @source https://github.com/onesketchyguy/NotificationPrompter/blob/main/NotificationPrompt.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/onesketchyguy/NotificationPrompter/main/NotificationPrompt.plugin.js
+ * @website https://github.com/onesketchyguy/NotificationPrompter
  */
  
  module.exports = class NotificationPrompter {
@@ -18,16 +22,16 @@
 	observer(changes) { } // Optional function. Observer for the `document`. Better documentation than I can provide is found here: <https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver>
 
 	onSwitch() {
-		var SelectedGuildStore = BdApi.findModuleByProps("getLastSelectedGuildId");
-		var ID = SelectedGuildStore.getLastSelectedGuildId();
+		// Get the ID from the current server/guild
+		var ID = BdApi.findModuleByProps("getLastSelectedGuildId").getLastSelectedGuildId();
 		
+		// Only show one notification per server/guild
 		if (ID == this.lastGuild) return;
+		this.lastGuild = ID;
 		
-		var GuildStore = BdApi.findModuleByProps("getGuild");
-		var guild = GuildStore.getGuild(ID);
+		// Get the server/guild from the ID
+		var guild = BdApi.findModuleByProps("getGuild").getGuild(ID);
 		console.log(guild);
-
-		console.log(guild.joinedAt.getMinutes());
 
 		// FIXME: Add a check for if the user has overwritten the default notification settings
 		// FIXME: Add a check if this is the first time the user has joined this server
@@ -35,8 +39,6 @@
 			// On found server with Notify all messages flag
 			if (this.getUseAlert() == true) BdApi.alert(this.getAlertHead(), this.getAlert());
 			else BdApi.showToast(this.getAlertHead() + " " + this.getAlert(), {type:"warning", icon: true});
-			
-			this.lastGuild = ID;
 		}
 	}
 }
