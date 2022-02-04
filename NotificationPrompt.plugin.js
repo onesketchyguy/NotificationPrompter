@@ -1,7 +1,7 @@
 /**
  * @name NotificationPrompter
  * @description This is a plugin intended to prompt the user when joining a server with chat notifications default. 
- * @version 0.2.3
+ * @version 0.2.4
  * @author OneSketchyGuy
  * @authorLink https://github.com/onesketchyguy
  * @source https://github.com/onesketchyguy/NotificationPrompter/blob/main/NotificationPrompt.plugin.js
@@ -14,7 +14,8 @@ let MessageNotifications = BdApi.findModuleByProps('resolvedMessageNotifications
 let GuildStore = BdApi.findModuleByProps("getGuild"); 
 let SelectedGuildIDManager = BdApi.findModuleByProps("getLastSelectedGuildId");
 
-const ARBITRARY_JOIN_TIME = 0.1;
+const MINUTE = 60e3;
+const ARBITRARY_JOIN_TIME = 10 * MINUTE;
 
  module.exports = class NotificationPrompter {	 
 	start() { } // Required function. Called when the plugin is activated (including after reloads)
@@ -40,7 +41,7 @@ const ARBITRARY_JOIN_TIME = 0.1;
 		 // On found server with Notify all messages flag
 		if (guild.defaultMessageNotifications == 0 && userSettings == 0) {
 			// Compare difference between the join date and current date
-			const diff = (Date.now() - guild.joinedAt) / 86400000;
+			const diff = (Date.now() - guild.joinedAt);
 
 			if (diff <= ARBITRARY_JOIN_TIME) {
 				BdApi.alert(this.getAlertHead(), this.getAlert());
