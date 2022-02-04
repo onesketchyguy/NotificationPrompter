@@ -1,7 +1,7 @@
 /**
  * @name NotificationPrompter
  * @description This is a plugin intended to prompt the user when joining a server with chat notifications default. 
- * @version 0.2.2
+ * @version 0.2.3
  * @author OneSketchyGuy
  * @authorLink https://github.com/onesketchyguy
  * @source https://github.com/onesketchyguy/NotificationPrompter/blob/main/NotificationPrompt.plugin.js
@@ -9,51 +9,38 @@
  * @website https://github.com/onesketchyguy/NotificationPrompter
  */
 
-let MessageNotifications;
-let GuildStore;
-let SelectedGuildIDManager;
+// Cache all the required modules
+let MessageNotifications = BdApi.findModuleByProps('resolvedMessageNotifications');
+let GuildStore = BdApi.findModuleByProps("getGuild"); 
+let SelectedGuildIDManager = BdApi.findModuleByProps("getLastSelectedGuildId");
 
 const ARBITRARY_JOIN_TIME = 0.1;
 
- module.exports = class NotificationPrompter {
-	getName() { return "Notification prompter"; }
+ module.exports = class NotificationPrompter {	 
+	start() { } // Required function. Called when the plugin is activated (including after reloads)
+	stop()  { } // Required function. Called when the plugin is deactivated
+	
 	getAlertHead() { return "HEADS UP!"; }
 	getAlert(name) { return "This server has all message notifications enabled."; }
-	 
-	load()  { // Optional function. Called when the plugin is loaded in to memory
-
-		// Cache all the required modules
-		MessageNotifications = BdApi.findModuleByProps('resolvedMessageNotifications');
-		GuildStore = BdApi.findModuleByProps("getGuild"); 
-		SelectedGuildIDManager = BdApi.findModuleByProps("getLastSelectedGuildId");
-	}
-
-	start() { this.load() } // Required function. Called when the plugin is activated (including after reloads)
-	stop()  { } // Required function. Called when the plugin is deactivated
-
-	observer(changes) { } // Optional function. Observer for the `document`. Better documentation than I can provide is found here: <https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver>
-
+	
 	onSwitch() {
 		// Get the ID from the current server/guild
-		var guildID = SelectedGuildIDManager.getLastSelectedGuildId();
-		console.log(guildID);
+		const guildID = SelectedGuildIDManager.getLastSelectedGuildId();
 
 		// Only show one notification per server/guild
 		if (guildID == this.lastGuildID) return;
 		this.lastGuildID = guildID;
 
 		// Get the server/guild from the ID
-		var guild = GuildStore.getGuild(guildID);
+		const guild = GuildStore.getGuild(guildID);
 
 		// Check for if the user has overwritten the default notification settings
-		var userSettings = MessageNotifications.getMessageNotifications(guildID);
+		const userSettings = MessageNotifications.getMessageNotifications(guildID);
 
 		 // On found server with Notify all messages flag
 		if (guild.defaultMessageNotifications == 0 && userSettings == 0) {
 			// Compare difference between the join date and current date
-			var joinDate = guild.joinedAt;
-			var diff = (Date.now()-joinDate)/86400000;
-			console.log(diff);
+			const diff = (Date.now() - guild.joinedAt) / 86400000;
 
 			if (diff <= ARBITUARY_JOIN_TIME) {
 				BdApi.alert(this.getAlertHead(), this.getAlert());
