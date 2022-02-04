@@ -1,7 +1,7 @@
 /**
  * @name NotificationPrompter
  * @description This is a plugin intended to prompt the user when joining a server with chat notifications default. 
- * @version 0.2.1
+ * @version 0.2.2
  * @author OneSketchyGuy
  * @authorLink https://github.com/onesketchyguy
  * @source https://github.com/onesketchyguy/NotificationPrompter/blob/main/NotificationPrompt.plugin.js
@@ -13,7 +13,7 @@ let MessageNotifications;
 let GuildStore;
 let SelectedGuildIDManager;
 
-const ARBITUARY_JOIN_TIME = 0.1;
+const ARBITRARY_JOIN_TIME = 0.1;
 
  module.exports = class NotificationPrompter {
 	getName() { return "Notification prompter"; }
