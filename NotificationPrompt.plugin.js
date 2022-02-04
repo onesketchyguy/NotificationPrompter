@@ -42,7 +42,7 @@ const ARBITRARY_JOIN_TIME = 0.1;
 			// Compare difference between the join date and current date
 			const diff = (Date.now() - guild.joinedAt) / 86400000;
 
-			if (diff <= ARBITUARY_JOIN_TIME) {
+			if (diff <= ARBITRARY_JOIN_TIME) {
 				BdApi.alert(this.getAlertHead(), this.getAlert());
 			}
 			else {
